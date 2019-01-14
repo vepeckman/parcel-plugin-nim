@@ -5,7 +5,9 @@ const { Asset } = require("parcel-bundler");
 
 function nimCompile (path) {
     return new Promise((resolve, reject) => {
-        const compile = spawn("nim", ["js", path])
+        const compile = process.env.NODE_ENV !== "production" ? 
+            spawn("nim", ["js", path]) :
+            spawn("nim", ["js", "-d:release", path]);
         let out = "";
         let err = "";
         
@@ -54,6 +56,10 @@ class NimAsset extends Asset {
     constructor(name, options) {
         super(name, options);
         this.type = "js";
+    }
+
+    shouldInvalidate() {
+        return true;
     }
 
     async generate() {
