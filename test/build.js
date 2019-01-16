@@ -3,6 +3,8 @@ const Path = require('path');
 
 const entryFiles = Path.join(__dirname, './index.html');
 
+//process.env.NODE_ENV = 'production';
+
 const options = {
   outDir: './dist', // The out directory to put the build files in, defaults to dist
   outFile: 'index.html', // The name of the outputFile

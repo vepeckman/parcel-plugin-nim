@@ -1,13 +1,14 @@
 const { spawn } = require("child_process");
 const fs = require("fs");
+const path = require("path");
 
 const { Asset } = require("parcel-bundler");
 
 function nimCompile (path) {
     return new Promise((resolve, reject) => {
         const compile = process.env.NODE_ENV !== "production" ? 
-            spawn("nim", ["js", path]) :
-            spawn("nim", ["js", "-d:release", path]);
+            spawn("nim", ["js", "--genDeps", path]) :
+            spawn("nim", ["js", "--genDeps", "-d:release", path]);
         let out = "";
         let err = "";
         
@@ -40,17 +41,6 @@ function read (path) {
     })
 }
 
-function compileFilePath (path) {
-    let pathParts = path.split("/");
-    const idx = pathParts.length - 1;
-    let nimFile = pathParts[idx];
-    let fileNameParts = nimFile.split(".");
-    fileNameParts[fileNameParts.length - 1] = "js"
-    const fileName = fileNameParts.join(".");
-    pathParts[idx] = "nimcache/" + fileName;
-    return pathParts.join("/");
-}
-
 class NimAsset extends Asset {
     
     constructor(name, options) {
@@ -58,13 +48,54 @@ class NimAsset extends Asset {
         this.type = "js";
     }
 
+    nimcacheDir () {
+        const dir = path.dirname(this.name);
+        return dir + "/nimcache";
+    }
+
+    projectName () {
+        const p = path.parse(this.name);
+        return p.name;
+    }
+
+    projectFile() {
+        return {
+            dir: this.nimcacheDir(),
+            name: this.projectName()
+        }
+    }
+
+    compiledFilePath() {
+        let file = this.projectFile();
+        file.ext = '.js';
+        return path.format(file);
+    }
+
+    depFilePath() {
+        let file = this.projectFile();
+        file.ext = '.deps';
+        return path.format(file);
+    }
+
     shouldInvalidate() {
         return true;
     }
 
-    async generate() {
+    async pretransform() {
         await nimCompile(this.name);
-        let code = await read(compileFilePath(this.name))
+    }
+
+    async collectDependencies() {
+        if (fs.existsSync(this.depFilePath())) {
+            const deps = await read(this.depFilePath());
+            deps.split('\n')
+                .filter(path => path.includes(__dirname) && path !== this.name)
+                .forEach(path => this.addDependency(path, {includedInParent: true}))
+        }
+    }
+
+    async generate() {
+        let code = await read(this.compiledFilePath())
         return [
             {
                 type: "js",

@@ -1,0 +1,1 @@
+proc hello*(): string = "new"
