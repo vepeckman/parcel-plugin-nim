@@ -1,8 +1,11 @@
 # parcel-plugin-nim
 Nim asset for Parcel
 
+## Installation
+`npm i --save-dev parcel-plugin-nim`
+
 ## Usage
-This plugin allows [Parcel](https://parceljs.org/) to bundle [Nim](https://nim-lang.org/) programs as a web asset. To use, install with `npm i --save-dev parcel-plugin-nim`, and Parcel will automatically load the plugin. When Parcel detects a Nim file in the dependencies of an asset, Parcel will run the Nim compiler (which must be installed on your computer and accessible from the path). The Nim compiler will compile the file into JavaScript, which the plugin will provide back to Parcel. Parcel will then do any relevant JavaScript transformations and bundling.
+This plugin allows [Parcel](https://parceljs.org/) to bundle [Nim](https://nim-lang.org/) programs as a web asset. To use, simply install the plugin (Parcel auto loads plugins listed in `package.json`). When Parcel detects a Nim file in the dependencies of an asset, Parcel will run the Nim compiler (which must be installed on your computer and accessible from the path). The Nim compiler will compile the file into JavaScript, which the plugin will provide back to Parcel. Parcel will then do any relevant JavaScript transformations and bundling.
 
 Example:
 
