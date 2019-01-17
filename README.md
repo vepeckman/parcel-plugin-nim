@@ -26,7 +26,7 @@ Then run `parcel index.html` or `./node_modules/.bin/parcel index.html`
 ## Tips
 1. This plugin makes it easy for a JavaScript file to import functions from Nim, as well as allowing a Nim file to import functions from JavaScript. I also wrote [jsExport.nim](https://github.com/nepeckman/jsExport.nim), a macro which makes it easier to export functions from Nim to JavaScript.
 2. It is recommended to only have one Nim entry point. Nim already bundles all generated JavaScript into a single file, so multiple Nim entry points could include multiple copies of Nim standard library functions.
-3. If you run Parcel in watch mode (`parcel watch ...`), it will watch your web assets and auto refresh your browser when a change occurs. If you are running the nightly Nim compiler, Parcel will be able to watch all Nim files that your entry point depends on (as well as the entry point itself). If you are not using nightly Nim, only changes to the entry point will trigger a refresh.
+3. If you run Parcel in watch mode (`parcel watch ...`), it will watch your web assets and auto refresh your browser when a change occurs. If you are running Nim off the devel branch (or using the nightly Nim compiler), Parcel will be able to watch all Nim files that your entry point depends on (as well as the entry point itself). If you are not using nightly Nim, only changes to the entry point will trigger a refresh.
 4. When you run Parcel in production mode (`parcel build ...`), this plugin will add the `-d:release` flag to the nim compile command.
 
 ## Roadmap

@@ -58,23 +58,22 @@ class NimAsset extends Asset {
         return p.name;
     }
 
-    projectFile() {
-        return {
+    projectFile(extension) {
+        let ext = extension || "";
+        let file = {
             dir: this.nimcacheDir(),
-            name: this.projectName()
+            name: this.projectName(),
+            ext: ext
         }
+        return path.format(file)
     }
 
     compiledFilePath() {
-        let file = this.projectFile();
-        file.ext = '.js';
-        return path.format(file);
+        return this.projectFile(".js")
     }
 
     depFilePath() {
-        let file = this.projectFile();
-        file.ext = '.deps';
-        return path.format(file);
+        return this.projectFile(".deps")
     }
 
     shouldInvalidate() {
