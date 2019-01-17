@@ -48,6 +48,15 @@ class NimAsset extends Asset {
         this.type = "js";
     }
 
+    getProjectRoot() {
+        let file = path.parse(this.name);
+        let dir = file.dir;
+        while (dir !== file.root && !fs.existsSync(dir + path.sep + "package.json")) {
+            dir = path.dirname(dir);
+        }
+        return dir === file.root ? file.dir : dir;
+    }
+
     nimcacheDir () {
         const dir = path.dirname(this.name);
         return dir + "/nimcache";
@@ -87,8 +96,9 @@ class NimAsset extends Asset {
     async collectDependencies() {
         if (fs.existsSync(this.depFilePath())) {
             const deps = await read(this.depFilePath());
+            const dir = this.getProjectRoot();
             deps.split('\n')
-                .filter(path => path.includes(__dirname) && path !== this.name)
+                .filter(path => path.includes(dir) && path !== this.name)
                 .forEach(path => this.addDependency(path, {includedInParent: true}))
         }
     }
