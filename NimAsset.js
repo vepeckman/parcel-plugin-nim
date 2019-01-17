@@ -86,7 +86,7 @@ class NimAsset extends Asset {
     }
 
     shouldInvalidate() {
-        return true;
+        return !fs.existsSync(this.depFilePath());
     }
 
     async pretransform() {
