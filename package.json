@@ -1,6 +1,6 @@
 {
   "name": "parcel-plugin-nim",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Nim asset for Parcel",
   "main": "index.js",
   "scripts": {
