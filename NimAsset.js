@@ -4,11 +4,18 @@ const path = require("path");
 
 const { Asset } = require("parcel-bundler");
 
-function nimCompile (path) {
+function nimCompile (file) {
     return new Promise((resolve, reject) => {
+	try {
+	    fs.mkdirSync("nimcache");
+	} catch (e) {
+	    if (e.code !== "EEXIST") {
+	        throw e;
+	    }
+	}
         const compile = process.env.NODE_ENV !== "production" ? 
-            spawn("nim", ["js", "--genDeps", path]) :
-            spawn("nim", ["js", "--genDeps", "-d:release", path]);
+            spawn("nim", ["js", "--genDeps", "-o:nimcache/", file]) :
+            spawn("nim", ["js", "--genDeps", "-o:nimcache/", "-d:release", file]);
         let out = "";
         let err = "";
         
@@ -22,6 +29,9 @@ function nimCompile (path) {
 
         compile.on("close", (exitCode) => {
             if (exitCode === 0) {
+		const depsFile = path.parse(file).name + ".deps";
+		fs.copyFileSync(depsFile, "nimcache/" + depsFile);
+		fs.unlinkSync(depsFile);
                 resolve(out);
             } else {
                 reject(err);
